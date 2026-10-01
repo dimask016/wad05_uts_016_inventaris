@@ -90,3 +90,14 @@ pip install -r requirements.txt
 
 # Jalankan server
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+Endpoint yang tersedia:
+
+Method	Endpoint	Deskripsi
+GET	/	Cek status backend
+GET	/barang	Ambil semua barang (bisa ?q=keyword)
+GET	/barang/{id}	Ambil satu barang
+POST	/barang	Tambah barang baru
+DELETE	/barang/{id}	Hapus barang
+PUT	/barang/{id}	Update barang (bonus)
+GET	/docs	Swagger UI (dokumentasi otomatis)

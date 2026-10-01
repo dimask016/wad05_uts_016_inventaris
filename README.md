@@ -104,3 +104,11 @@ GET	/docs	Swagger UI (dokumentasi otomatis)
 
 Cek backend di browser: http://3.24.168.188:8000/barang
 Dokumentasi interaktif: http://3.24.168.188:8000/docs
+
+Menjalankan Keduanya Bersamaan
+Karena frontend dan backend adalah dua proses terpisah, keduanya
+harus dijalankan bersamaan di dua terminal berbeda:
+
+Terminal	Folder	Perintah	Port
+Terminal 1	backend-fastapi	uvicorn main:app --reload --host 0.0.0.0 --port 8000	8000
+Terminal 2	dashboard-vue	npm run dev	3030

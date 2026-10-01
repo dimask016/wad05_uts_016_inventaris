@@ -101,3 +101,6 @@ POST	/barang	Tambah barang baru
 DELETE	/barang/{id}	Hapus barang
 PUT	/barang/{id}	Update barang (bonus)
 GET	/docs	Swagger UI (dokumentasi otomatis)
+
+Cek backend di browser: http://3.24.168.188:8000/barang
+Dokumentasi interaktif: http://3.24.168.188:8000/docs

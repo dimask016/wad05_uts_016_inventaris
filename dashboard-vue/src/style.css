@@ -236,12 +236,22 @@ body {
   gap: 0.6rem;
 }
 
-.form-grid input {
+.form-grid input,
+.form-grid select {
   padding: 0.55rem 0.8rem;
   border: 1px solid #cbd2d9;
   border-radius: 6px;
   font-size: 0.92rem;
   width: 100%;
+  background-color: #ffffff;
+  font-family: inherit;
+  color: var(--c-text);
+}
+.form-grid select:focus,
+.form-grid input:focus {
+  outline: 2px solid var(--c-primary);
+  outline-offset: 1px;
+  border-color: transparent;
 }
 
 .form-actions {

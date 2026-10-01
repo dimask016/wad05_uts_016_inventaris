@@ -1,0 +1,26 @@
+<script setup>
+defineProps({
+  barang: { type: Object, required: true },
+  status: { type: Object, required: true }, // { kelas, label }
+});
+
+defineEmits(["hapus"]);
+</script>
+
+<template>
+  <div class="kartu">
+    <div class="kartu-nama">{{ barang.nama }}</div>
+    <div class="kartu-meta">
+      {{ barang.kategori }} · {{ barang.lokasi_gudang }}
+    </div>
+    <div>
+      <span class="badge" :class="status.kelas">{{ status.label }}</span>
+      <span class="kartu-meta" style="margin-left:0.5rem">
+        Stok: {{ barang.jumlah_stok }}
+      </span>
+    </div>
+    <div class="kartu-actions">
+      <button class="btn btn-danger" @click="$emit('hapus')">Hapus</button>
+    </div>
+  </div>
+</template>

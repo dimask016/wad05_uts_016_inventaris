@@ -1,0 +1,22 @@
+[
+  { "id": 1,  "nama": "Server Rack 42U",                  "kategori": "Rack & Enclosure",  "jumlah_stok": 8,   "lokasi_gudang": "DC-Rak A-01" },
+  { "id": 2,  "nama": "Server Rack 24U",                  "kategori": "Rack & Enclosure",  "jumlah_stok": 4,   "lokasi_gudang": "DC-Rak A-01" },
+  { "id": 3,  "nama": "Rack Mounting Rail Kit",           "kategori": "Rack & Enclosure",  "jumlah_stok": 22,  "lokasi_gudang": "DC-Rak A-02" },
+  { "id": 4,  "nama": "Blanking Panel 1U",                "kategori": "Rack & Enclosure",  "jumlah_stok": 45,  "lokasi_gudang": "DC-Rak A-02" },
+  { "id": 5,  "nama": "Server Blade Dell PowerEdge",      "kategori": "Server Blade",      "jumlah_stok": 12,  "lokasi_gudang": "DC-Rak B-01" },
+  { "id": 6,  "nama": "Server Blade HPE ProLiant",        "kategori": "Server Blade",      "jumlah_stok": 3,   "lokasi_gudang": "DC-Rak B-01" },
+  { "id": 7,  "nama": "CPU Intel Xeon Gold 6338",         "kategori": "Prosesor",          "jumlah_stok": 18,  "lokasi_gudang": "DC-Rak B-02" },
+  { "id": 8,  "nama": "CPU AMD EPYC 7543",                "kategori": "Prosesor",          "jumlah_stok": 5,   "lokasi_gudang": "DC-Rak B-02" },
+  { "id": 9,  "nama": "RAM ECC DDR4 32GB",                "kategori": "Memori",            "jumlah_stok": 60,  "lokasi_gudang": "DC-Rak C-01" },
+  { "id": 10, "nama": "RAM ECC DDR5 64GB",                "kategori": "Memori",            "jumlah_stok": 0,   "lokasi_gudang": "DC-Rak C-01" },
+  { "id": 11, "nama": "SSD NVMe Enterprise 1TB",          "kategori": "Penyimpanan",       "jumlah_stok": 25,  "lokasi_gudang": "DC-Rak C-02" },
+  { "id": 12, "nama": "HDD SAS 4TB 7200RPM",              "kategori": "Penyimpanan",       "jumlah_stok": 15,  "lokasi_gudang": "DC-Rak C-02" },
+  { "id": 13, "nama": "RAID Controller Card",             "kategori": "Penyimpanan",       "jumlah_stok": 2,   "lokasi_gudang": "DC-Rak C-03" },
+  { "id": 14, "nama": "PSU Redundant 800W",               "kategori": "Power Supply",      "jumlah_stok": 20,  "lokasi_gudang": "DC-Rak D-01" },
+  { "id": 15, "nama": "PDU Rack 16A",                     "kategori": "Power Supply",      "jumlah_stok": 6,   "lokasi_gudang": "DC-Rak D-01" },
+  { "id": 16, "nama": "UPS Online 10kVA",                 "kategori": "Power Supply",      "jumlah_stok": 4,   "lokasi_gudang": "DC-Rak D-02" },
+  { "id": 17, "nama": "Switch Cisco Catalyst 48-Port",    "kategori": "Jaringan",          "jumlah_stok": 7,   "lokasi_gudang": "DC-Rak E-01" },
+  { "id": 18, "nama": "Kabel Fiber Optic LC-LC 3m",       "kategori": "Jaringan",          "jumlah_stok": 50,  "lokasi_gudang": "DC-Rak E-01" },
+  { "id": 19, "nama": "SFP+ Transceiver 10G",             "kategori": "Jaringan",          "jumlah_stok": 3,   "lokasi_gudang": "DC-Rak E-02" },
+  { "id": 20, "nama": "Fan Tray Pendingin Rack",          "kategori": "Pendingin",         "jumlah_stok": 9,   "lokasi_gudang": "DC-Rak F-01" }
+]

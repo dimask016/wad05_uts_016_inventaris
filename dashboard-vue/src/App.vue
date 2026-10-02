@@ -1,6 +1,4 @@
-cd ~/uts/dashboard-vue/src
 
-cat > App.vue << 'EOF'
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import RingkasanTiles from "./components/RingkasanTiles.vue";
@@ -29,8 +27,8 @@ const urutan = ref("asc"); // "asc" | "desc"
 /* ============================================================
    State untuk 2 form terpisah
    ============================================================ */
-const tampilFormTambah = ref(false);   // untuk form TAMBAH
-const barangEdit = ref(null);           // untuk form EDIT (null = tutup)
+const tampilFormTambah = ref(false);
+const barangEdit = ref(null);
 
 /* ============================================================
    Fetch data dari backend
@@ -98,11 +96,36 @@ const ringkasanKategori = computed(() => {
 });
 
 /* ============================================================
+   Computed #4: total unit (untuk header chart)
+   ============================================================ */
+const totalUnit = computed(() =>
+  barangList.value.reduce((sum, b) => sum + b.jumlah_stok, 0)
+);
+
+/* ============================================================
+   Helper: warna bar per kategori (8 warna berbeda)
+   ============================================================ */
+const daftarWarna = [
+  "#0b4f6c",  // biru tua
+  "#16a34a",  // hijau
+  "#d97706",  // kuning tua
+  "#dc2626",  // merah
+  "#7c3aed",  // ungu
+  "#0891b2",  // cyan
+  "#c2410c",  // oranye tua
+  "#4b5563",  // abu
+];
+
+function warnaBar(index) {
+  return daftarWarna[index % daftarWarna.length];
+}
+
+/* ============================================================
    Kontrol buka/tutup form (HANYA SATU form tampil)
    ============================================================ */
 function bukaFormTambah() {
   tampilFormTambah.value = true;
-  barangEdit.value = null; // tutup form edit kalau sedang terbuka
+  barangEdit.value = null;
 }
 
 function tutupFormTambah() {
@@ -110,8 +133,8 @@ function tutupFormTambah() {
 }
 
 function bukaFormEdit(barang) {
-  barangEdit.value = { ...barang }; // copy agar tidak ubah objek asli
-  tampilFormTambah.value = false;   // tutup form tambah kalau sedang terbuka
+  barangEdit.value = { ...barang };
+  tampilFormTambah.value = false;
 }
 
 function tutupFormEdit() {
@@ -227,14 +250,14 @@ onMounted(muatBarang);
       </button>
     </div>
 
-    <!-- ===== Form TAMBAH (khusus POST) ===== -->
+    <!-- ===== Form TAMBAH ===== -->
     <TambahBarangForm
       v-if="tampilFormTambah"
       @submit="tambahBarang"
       @batal="tutupFormTambah"
     />
 
-    <!-- ===== Form EDIT (khusus PUT) ===== -->
+    <!-- ===== Form EDIT ===== -->
     <EditBarangForm
       v-if="barangEdit"
       :barang="barangEdit"
@@ -320,25 +343,73 @@ onMounted(muatBarang);
       />
     </div>
 
-    <!-- ===== Bar Chart: Stok per Kategori ===== -->
+    <!-- ===== Bar Chart Horizontal ===== -->
     <section
       v-if="keadaan === 'success' && ringkasanKategori.length > 0"
-      class="form-card"
+      class="chart-card"
     >
-      <h2>📊 Stok per Kategori</h2>
-      <div
-        v-for="item in ringkasanKategori"
-        :key="item.nama"
-        class="bar-row"
-      >
-        <span class="bar-label">{{ item.nama }}</span>
-        <div class="bar-track">
-          <div
-            class="bar-fill"
-            :style="{ width: item.persentase + '%' }"
-          ></div>
+      <div class="chart-header">
+        <h2>📊 Stok per Kategori</h2>
+        <span class="chart-total">
+          Total: <strong>{{ totalUnit }}</strong> unit
+        </span>
+      </div>
+
+      <div class="bar-chart">
+        <div
+          v-for="(item, index) in ringkasanKategori"
+          :key="'h-' + item.nama"
+          class="bar-row"
+        >
+          <span class="bar-label" :title="item.nama">{{ item.nama }}</span>
+          <div class="bar-track">
+            <div
+              class="bar-fill"
+              :style="{
+                width: item.persentase + '%',
+                background: warnaBar(index),
+              }"
+            >
+              <span class="bar-inside">{{ item.total }}</span>
+            </div>
+          </div>
+          <span class="bar-value">{{ item.total }}</span>
         </div>
-        <span class="bar-value">{{ item.total }}</span>
+      </div>
+    </section>
+
+    <!-- ===== Diagram Batang Vertikal ===== -->
+    <section
+      v-if="keadaan === 'success' && ringkasanKategori.length > 0"
+      class="chart-card"
+    >
+      <div class="chart-header">
+        <h2>📈 Diagram Batang — Stok per Kategori</h2>
+        <span class="chart-total">
+          Maks: <strong>{{ ringkasanKategori[0]?.total }}</strong> unit
+        </span>
+      </div>
+
+      <div class="v-chart">
+        <div
+          v-for="(item, index) in ringkasanKategori"
+          :key="'v-' + item.nama"
+          class="v-bar-col"
+        >
+          <span class="v-bar-value">{{ item.total }}</span>
+          <div class="v-bar-wrapper">
+            <div
+              class="v-bar"
+              :style="{
+                height: item.persentase + '%',
+                background: warnaBar(index),
+              }"
+            ></div>
+          </div>
+          <span class="v-bar-label" :title="item.nama">
+            {{ item.nama }}
+          </span>
+        </div>
       </div>
     </section>
   </main>

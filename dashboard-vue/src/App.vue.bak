@@ -5,7 +5,6 @@ cat > App.vue << 'EOF'
 import { ref, computed, onMounted } from "vue";
 import RingkasanTiles from "./components/RingkasanTiles.vue";
 import TambahBarangForm from "./components/TambahBarangForm.vue";
-import EditBarangForm from "./components/EditBarangForm.vue";
 import BarangCard from "./components/BarangCard.vue";
 
 /* ============================================================
@@ -25,22 +24,24 @@ const pesanError = ref("");
    ============================================================ */
 const queryPencarian = ref("");
 const urutan = ref("asc"); // "asc" | "desc"
+const tampilForm = ref(false);
 
 /* ============================================================
-   State untuk 2 form terpisah
+   State edit (untuk mode edit)
    ============================================================ */
-const tampilFormTambah = ref(false);   // untuk form TAMBAH
-const barangEdit = ref(null);           // untuk form EDIT (null = tutup)
+const editBarang = ref(null);
 
 /* ============================================================
-   Fetch data dari backend
+   Fetch data dari backend FastAPI
    ============================================================ */
 async function muatBarang() {
   keadaan.value = "loading";
   pesanError.value = "";
   try {
     const response = await fetch(API_URL);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
     const data = await response.json();
 
     if (!Array.isArray(data) || data.length === 0) {
@@ -48,6 +49,7 @@ async function muatBarang() {
       keadaan.value = "empty";
       return;
     }
+
     barangList.value = data;
     keadaan.value = "success";
   } catch (err) {
@@ -58,7 +60,7 @@ async function muatBarang() {
 }
 
 /* ============================================================
-   Computed #1: filter berdasarkan nama / kategori
+   Computed #1: filter berdasarkan nama atau kategori
    ============================================================ */
 const barangTersaring = computed(() => {
   const q = queryPencarian.value.toLowerCase().trim();
@@ -71,7 +73,8 @@ const barangTersaring = computed(() => {
 });
 
 /* ============================================================
-   Computed #2: urutkan A-Z / Z-A (computed berantai)
+   Computed #2: urutkan A-Z / Z-A di atas hasil filter
+   (computed berantai)
    ============================================================ */
 const barangTampil = computed(() => {
   const list = [...barangTersaring.value];
@@ -80,7 +83,7 @@ const barangTampil = computed(() => {
 });
 
 /* ============================================================
-   Computed #3: ringkasan per kategori (bar chart)
+   Computed #3: ringkasan stok per kategori (bar chart)
    ============================================================ */
 const ringkasanKategori = computed(() => {
   const grouped = barangList.value.reduce((acc, b) => {
@@ -98,27 +101,6 @@ const ringkasanKategori = computed(() => {
 });
 
 /* ============================================================
-   Kontrol buka/tutup form (HANYA SATU form tampil)
-   ============================================================ */
-function bukaFormTambah() {
-  tampilFormTambah.value = true;
-  barangEdit.value = null; // tutup form edit kalau sedang terbuka
-}
-
-function tutupFormTambah() {
-  tampilFormTambah.value = false;
-}
-
-function bukaFormEdit(barang) {
-  barangEdit.value = { ...barang }; // copy agar tidak ubah objek asli
-  tampilFormTambah.value = false;   // tutup form tambah kalau sedang terbuka
-}
-
-function tutupFormEdit() {
-  barangEdit.value = null;
-}
-
-/* ============================================================
    Handler: tambah barang (POST)
    ============================================================ */
 async function tambahBarang(payload) {
@@ -133,7 +115,7 @@ async function tambahBarang(payload) {
       throw new Error(err.detail?.[0]?.msg || `HTTP ${response.status}`);
     }
     await muatBarang();
-    tampilFormTambah.value = false;
+    tampilForm.value = false;
   } catch (err) {
     alert("Gagal menambah barang: " + err.message);
   }
@@ -144,7 +126,7 @@ async function tambahBarang(payload) {
    ============================================================ */
 async function updateBarang(payload) {
   try {
-    const response = await fetch(`${API_URL}/${barangEdit.value.id}`, {
+    const response = await fetch(`${API_URL}/${editBarang.value.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -154,10 +136,38 @@ async function updateBarang(payload) {
       throw new Error(err.detail?.[0]?.msg || `HTTP ${response.status}`);
     }
     await muatBarang();
-    barangEdit.value = null;
+    editBarang.value = null;
+    tampilForm.value = false;
   } catch (err) {
     alert("Gagal update barang: " + err.message);
   }
+}
+
+/* ============================================================
+   Handler: submit form (tambah ATAU update)
+   ============================================================ */
+async function submitBarang(payload) {
+  if (editBarang.value) {
+    await updateBarang(payload);
+  } else {
+    await tambahBarang(payload);
+  }
+}
+
+/* ============================================================
+   Handler: mulai edit (isi form dengan data barang)
+   ============================================================ */
+function mulaiEdit(barang) {
+  editBarang.value = { ...barang };
+  tampilForm.value = true;
+}
+
+/* ============================================================
+   Handler: batal form (reset mode edit)
+   ============================================================ */
+function batalForm() {
+  editBarang.value = null;
+  tampilForm.value = false;
 }
 
 /* ============================================================
@@ -184,7 +194,7 @@ function statusStok(jumlah) {
 }
 
 /* ============================================================
-   Lifecycle
+   Lifecycle: muat data saat halaman dibuka
    ============================================================ */
 onMounted(muatBarang);
 </script>
@@ -219,27 +229,17 @@ onMounted(muatBarang);
       >
         Z → A
       </button>
-      <button
-        class="btn btn-primary"
-        @click="tampilFormTambah ? tutupFormTambah() : bukaFormTambah()"
-      >
-        {{ tampilFormTambah ? "Tutup Form" : "+ Tambah Barang" }}
+      <button class="btn btn-primary" @click="tampilForm = !tampilForm">
+        {{ tampilForm ? "Tutup Form" : "+ Tambah Barang" }}
       </button>
     </div>
 
-    <!-- ===== Form TAMBAH (khusus POST) ===== -->
+    <!-- ===== Form Tambah / Edit ===== -->
     <TambahBarangForm
-      v-if="tampilFormTambah"
-      @submit="tambahBarang"
-      @batal="tutupFormTambah"
-    />
-
-    <!-- ===== Form EDIT (khusus PUT) ===== -->
-    <EditBarangForm
-      v-if="barangEdit"
-      :barang="barangEdit"
-      @submit="updateBarang"
-      @batal="tutupFormEdit"
+      v-if="tampilForm"
+      :barang-edit="editBarang"
+      @submit="submitBarang"
+      @batal="batalForm"
     />
 
     <!-- ===== State Messages ===== -->
@@ -289,7 +289,10 @@ onMounted(muatBarang);
             </td>
             <td>
               <div class="aksi-group">
-                <button class="btn btn-edit" @click="bukaFormEdit(barang)">
+                <button
+                  class="btn btn-edit"
+                  @click="mulaiEdit(barang)"
+                >
                   Edit
                 </button>
                 <button
@@ -315,7 +318,7 @@ onMounted(muatBarang);
         :key="barang.id"
         :barang="barang"
         :status="statusStok(barang.jumlah_stok)"
-        @edit="bukaFormEdit(barang)"
+        @edit="mulaiEdit(barang)"
         @hapus="hapusBarang(barang.id, barang.nama)"
       />
     </div>

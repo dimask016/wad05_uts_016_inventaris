@@ -7,6 +7,9 @@
   padding: 0;
 }
 
+
+
+
 :root {
   --c-primary: #0b4f6c;
   --c-primary-dark: #093f56;
@@ -52,6 +55,31 @@ body {
   gap: 1rem;
 }
 
+/*===============
+Edit
+========*/
+/* ============================================================
+   Tombol Edit
+   ============================================================ */
+.btn-edit {
+  background: var(--c-warning);
+  color: #fff;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.8rem;
+}
+
+.btn-edit:hover {
+  background: #b45309;
+}
+
+/* ============================================================
+   Group tombol aksi (Edit + Hapus berdampingan)
+   ============================================================ */
+.aksi-group {
+  display: inline-flex;
+  gap: 0.35rem;
+  flex-wrap: nowrap;
+}
 /* ============================================================
    Ringkasan Tiles (4 kotak di atas)
    ============================================================ */

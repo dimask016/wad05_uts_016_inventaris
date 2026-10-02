@@ -1,7 +1,7 @@
 <script setup>
 defineProps({
   barang: { type: Object, required: true },
-  status: { type: Object, required: true },
+  status: { type: Object, required: true }, // { kelas, label }
 });
 
 defineEmits(["hapus", "edit"]);
@@ -15,13 +15,11 @@ defineEmits(["hapus", "edit"]);
     </div>
     <div>
       <span class="badge" :class="status.kelas">{{ status.label }}</span>
-      <span class="kartu-meta" style="margin-left: 0.5rem">
+      <span class="kartu-meta" style="margin-left:0.5rem">
         Stok: {{ barang.jumlah_stok }}
       </span>
     </div>
     <div class="kartu-actions">
-      <button class="btn btn-edit" @click="$emit('edit')">Edit</button>
-      <button class="btn btn-danger" @click="$emit('hapus')">Hapus</button>
-    </div>
-  </div>
+ <button class="btn btn-edit" @click="$emit('edit')">Edit</button>
+  <button class="btn btn-danger" @click="$emit('hapus')">Hapus</button>    </div>
 </template>

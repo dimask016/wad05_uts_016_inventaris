@@ -1,3 +1,4 @@
+
 <script setup>
 import { computed } from "vue";
 
@@ -8,17 +9,20 @@ const props = defineProps({
   },
 });
 
-/* 4 computed terpisah, semua dari data barang yang sama */
+/* Tile #1 — Total Barang */
 const totalBarang = computed(() => props.barangList.length);
 
+/* Tile #2 — Stok Menipis + Habis */
 const stokMenipisHabis = computed(
   () => props.barangList.filter((b) => b.jumlah_stok <= 5).length
 );
 
+/* Tile #3 — Jumlah Kategori (unik) */
 const jumlahKategori = computed(
   () => new Set(props.barangList.map((b) => b.kategori)).size
 );
 
+/* Tile #4 — Total Unit */
 const totalUnit = computed(
   () => props.barangList.reduce((sum, b) => sum + b.jumlah_stok, 0)
 );
@@ -44,3 +48,4 @@ const totalUnit = computed(
     </div>
   </section>
 </template>
+
